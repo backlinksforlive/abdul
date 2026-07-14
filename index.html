@@ -3,478 +3,1406 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Onto By Aanchal - Link Dashboard</title>
+<style>
+  :root {
+    --bg: #0b0f14;
+    --bg-card: #131a22;
+    --bg-card-hover: #182029;
+    --border: #232c36;
+    --accent: #ff6b6b;
+    --accent2: #4ecdc4;
+    --text: #e8edf2;
+    --text-dim: #8b98a5;
+    --radius: 14px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', system-ui, Arial, sans-serif;
+    background: radial-gradient(circle at 20% 0%, #16202b 0%, #0b0f14 55%);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 30px 18px 60px;
+  }
+  .wrap { max-width: 900px; margin: 0 auto; }
 
-<title>Onto By Aanchal | Premium Women's Fashion</title>
+  header { text-align: center; margin-bottom: 28px; }
+  header .logo {
+    font-size: 13px; letter-spacing: 3px; color: var(--accent2);
+    text-transform: uppercase; margin-bottom: 6px;
+  }
+  header h1 {
+    font-size: 32px; font-weight: 700;
+    background: linear-gradient(90deg, #ff6b6b, #ffb26b, #4ecdc4);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    margin-bottom: 6px;
+  }
+  header p { color: var(--text-dim); font-size: 14px; }
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  .top-stats {
+    display: flex; justify-content: center; gap: 14px;
+    margin: 22px 0 26px; flex-wrap: wrap;
+  }
+  .top-stats .pill {
+    background: var(--bg-card); border: 1px solid var(--border);
+    padding: 10px 22px; border-radius: 30px; font-size: 13px; color: var(--text-dim);
+  }
+  .top-stats .pill b { color: var(--text); font-size: 16px; margin-right: 4px; }
 
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  .search-box { max-width: 480px; margin: 0 auto 30px; position: relative; }
+  .search-box input {
+    width: 100%; padding: 13px 18px 13px 42px; border-radius: 30px;
+    border: 1px solid var(--border); background: var(--bg-card); color: var(--text);
+    font-size: 14px; outline: none; transition: border-color .2s;
+  }
+  .search-box input:focus { border-color: var(--accent2); }
+  .search-box::before {
+    content: "🔍"; position: absolute; left: 16px; top: 50%;
+    transform: translateY(-50%); font-size: 14px; opacity: .6;
+  }
 
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet">
+  .controls {
+    display: flex; justify-content: center; gap: 10px; margin-bottom: 26px;
+  }
+  .controls button {
+    background: var(--bg-card); border: 1px solid var(--border); color: var(--text-dim);
+    padding: 7px 16px; border-radius: 20px; font-size: 12px; cursor: pointer;
+    transition: all .15s;
+  }
+  .controls button:hover { border-color: var(--accent2); color: var(--text); }
 
-<link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
+  .accordion-item {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 10px;
+    overflow: hidden;
+    scroll-margin-top: 20px;
+  }
+  .accordion-header {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 20px;
+    background: transparent;
+    border: none;
+    color: var(--text);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: left;
+    transition: background .15s;
+  }
+  .accordion-header:hover { background: var(--bg-card-hover); }
+  .cat-icon { font-size: 17px; }
+  .accordion-title { flex: 1; }
+  .accordion-header .count {
+    background: #21262d; color: var(--text-dim); font-size: 11px;
+    padding: 3px 10px; border-radius: 12px;
+  }
+  .chevron {
+    font-size: 12px; color: var(--text-dim);
+    transition: transform .2s;
+  }
+  .accordion-item.open .chevron { transform: rotate(180deg); }
 
-<link rel="stylesheet" href="style.css">
+  .accordion-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height .25s ease;
+    padding: 0 20px;
+  }
+  .accordion-item.open .accordion-body {
+    max-height: 2000px;
+    padding: 0 20px 14px;
+  }
 
+  .link-list { list-style: none; border-top: 1px solid var(--border); }
+  .link-list li { border-bottom: 1px solid #1a2129; }
+  .link-list li:last-child { border-bottom: none; }
+  .link-list li.hidden { display: none; }
+  .link-list a {
+    display: flex; justify-content: space-between; align-items: center; gap: 12px;
+    text-decoration: none; padding: 10px 4px; color: var(--text); font-size: 13.5px;
+  }
+  .link-list a:hover .link-title { color: var(--accent2); }
+  .link-title { transition: color .15s; }
+  .link-domain {
+    color: var(--text-dim); font-size: 11px; white-space: nowrap;
+    background: #1a2129; padding: 3px 9px; border-radius: 10px;
+  }
+
+  footer { text-align: center; margin-top: 34px; color: var(--text-dim); font-size: 12px; }
+
+  #no-results { text-align: center; color: var(--text-dim); padding: 30px; display: none; }
+
+  @media (max-width: 600px) {
+    .link-list a { flex-direction: column; align-items: flex-start; gap: 4px; }
+    header h1 { font-size: 24px; }
+  }
+</style>
 </head>
-
 <body>
+<div class="wrap">
 
-<!--================ NAVBAR ================-->
+  <header>
+    <div class="logo">Onto By Aanchal</div>
+    <h1>Link Dashboard</h1>
+    <p>Web 2.0 Profiles & Blog Links Directory</p>
+  </header>
 
-<header>
+  <div class="top-stats">
+    <div class="pill"><b>160</b>Total Links</div>
+    <div class="pill"><b>18</b>Categories</div>
+  </div>
 
-<nav class="navbar">
+  <div class="search-box">
+    <input type="text" id="searchInput" placeholder="Search links by title or domain...">
+  </div>
 
-<div class="logo">
-ONTO
+  <div class="controls">
+    <button onclick="toggleAll(true)">Expand All</button>
+    <button onclick="toggleAll(false)">Collapse All</button>
+  </div>
+
+    <div class="accordion-item" id="pleated-tops-co-ord-sets">
+      <button class="accordion-header" onclick="toggleAccordion(this)">
+        <span class="cat-icon">👗</span>
+        <span class="accordion-title">Pleated Tops & Co-ord Sets</span>
+        <span class="count">6</span>
+        <span class="chevron">&#9662;</span>
+      </button>
+      <div class="accordion-body">
+        <ul class="link-list">
+        <li data-search="tops for pleated skirts ontobyaanchalin-work.colibriwp.com">
+          <a href="https://ontobyaanchalin-work.colibriwp.com/tops-for-pleated-skirts/" target="_blank" rel="noopener">
+            <span class="link-title">Tops for Pleated Skirts</span>
+            <span class="link-domain">ontobyaanchalin-work.colibriwp.com</span>
+          </a>
+        </li>
+        <li data-search="tops for pleated skirts - bravesites topsforpleatedskirts.bravesites.com">
+          <a href="https://topsforpleatedskirts.bravesites.com" target="_blank" rel="noopener">
+            <span class="link-title">Tops for Pleated Skirts - Bravesites</span>
+            <span class="link-domain">topsforpleatedskirts.bravesites.com</span>
+          </a>
+        </li>
+        <li data-search="pleated collection online pleatedcollectiononline.portfoliobox.net">
+          <a href="https://pleatedcollectiononline.portfoliobox.net/" target="_blank" rel="noopener">
+            <span class="link-title">Pleated Collection Online</span>
+            <span class="link-domain">pleatedcollectiononline.portfoliobox.net</span>
+          </a>
+        </li>
+        <li data-search="how pleated co-ord sets are redefining modern women's fashion pleated-tops.mystrikingly.com">
+          <a href="https://pleated-tops.mystrikingly.com/blog/how-pleated-co-ord-sets-are-redefining-modern-women-s-fashion-in-2026/i/view_as_owner" target="_blank" rel="noopener">
+            <span class="link-title">How Pleated Co-ord Sets Are Redefining Modern Women's Fashion</span>
+            <span class="link-domain">pleated-tops.mystrikingly.com</span>
+          </a>
+        </li>
+        <li data-search="pleated dresses for women online - trendy maxi pleated-tops.mystrikingly.com">
+          <a href="https://pleated-tops.mystrikingly.com/blog/pleated-dresses-for-women-online-trendy-maxi-stylish-pleated-dresses" target="_blank" rel="noopener">
+            <span class="link-title">Pleated Dresses for Women Online - Trendy Maxi</span>
+            <span class="link-domain">pleated-tops.mystrikingly.com</span>
+          </a>
+        </li>
+        <li data-search="pleated co-ord set - google sites sites.google.com">
+          <a href="https://sites.google.com/view/pleatedco-ordset/pleated-tops" target="_blank" rel="noopener">
+            <span class="link-title">Pleated Co-ord Set - Google Sites</span>
+            <span class="link-domain">sites.google.com</span>
+          </a>
+        </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="accordion-item" id="birthday-dresses-outfits">
+      <button class="accordion-header" onclick="toggleAccordion(this)">
+        <span class="cat-icon">🎂</span>
+        <span class="accordion-title">Birthday Dresses & Outfits</span>
+        <span class="count">11</span>
+        <span class="chevron">&#9662;</span>
+      </button>
+      <div class="accordion-body">
+        <ul class="link-list">
+        <li data-search="how to choose the perfect birthday outfit based on party style birthdaydressforwomen.wordpress.com">
+          <a href="https://birthdaydressforwomen.wordpress.com/2026/06/02/how-to-choose-the-perfect-birthday-outfit-for-women-based-on-your-party-style/" target="_blank" rel="noopener">
+            <span class="link-title">How to Choose the Perfect Birthday Outfit Based on Party Style</span>
+            <span class="link-domain">birthdaydressforwomen.wordpress.com</span>
+          </a>
+        </li>
+        <li data-search="how to choose perfect birthday outfit birthday-picks.blogspot.com">
+          <a href="https://birthday-picks.blogspot.com/2026/06/how-to-choose-perfect-birthday-outfit.html" target="_blank" rel="noopener">
+            <span class="link-title">How to Choose Perfect Birthday Outfit</span>
+            <span class="link-domain">birthday-picks.blogspot.com</span>
+          </a>
+        </li>
+        <li data-search="10 birthday outfit ideas that never go out of style birthdaydressforwomen.wordpress.com">
+          <a href="https://birthdaydressforwomen.wordpress.com/2026/06/09/10-birthday-outfit-ideas-for-women-that-never-go-out-of-style/" target="_blank" rel="noopener">
+            <span class="link-title">10 Birthday Outfit Ideas That Never Go Out of Style</span>
+            <span class="link-domain">birthdaydressforwomen.wordpress.com</span>
+          </a>
+        </li>
+        <li data-search="birthday outfits for women - stylish ideas birthdaydressforwomen.wordpress.com">
+          <a href="https://birthdaydressforwomen.wordpress.com/2026/06/18/birthday-outfits-for-women-stylish-ideas-to-make-your-special-day-unforgettable/" target="_blank" rel="noopener">
+            <span class="link-title">Birthday Outfits for Women - Stylish Ideas</span>
+            <span class="link-domain">birthdaydressforwomen.wordpress.com</span>
+          </a>
+        </li>
+        <li data-search="best birthday dress for women - stylish ideas onto.federatedjournals.com">
+          <a href="https://onto.federatedjournals.com/best-birthday-dress-for-women-stylish-ideas-to-make-your-special-day-shine/" target="_blank" rel="noopener">
+            <span class="link-title">Best Birthday Dress for Women - Stylish Ideas</span>
+            <span class="link-domain">onto.federatedjournals.com</span>
+          </a>
+        </li>
+        <li data-search="birthday picks - google sites sites.google.com">
+          <a href="https://sites.google.com/view/birthday-picks/" target="_blank" rel="noopener">
+            <span class="link-title">Birthday Picks - Google Sites</span>
+            <span class="link-domain">sites.google.com</span>
+          </a>
+        </li>
+        <li data-search="best birthday dress for women - stylish birthday-picks.blogspot.com">
+          <a href="https://birthday-picks.blogspot.com/2026/06/best-birthday-dress-for-women-stylish.html" target="_blank" rel="noopener">
+            <span class="link-title">Best Birthday Dress for Women - Stylish</span>
+            <span class="link-domain">birthday-picks.blogspot.com</span>
+          </a>
+        </li>
+        <li data-search="birthday outfits for ladies - google sites sites.google.com">
+          <a href="https://sites.google.com/view/birthday-picks/birthday-outfits-for-ladies" target="_blank" rel="noopener">
+            <span class="link-title">Birthday Outfits for Ladies - Google Sites</span>
+            <span class="link-domain">sites.google.com</span>
+          </a>
+        </li>
+        <li data-search="birthday outfits for ladies - 25 stylish picks birthday-picks.blogspot.com">
+          <a href="https://birthday-picks.blogspot.com/2026/06/birthday-outfits-for-ladies-25-stylish.html" target="_blank" rel="noopener">
+            <span class="link-title">Birthday Outfits for Ladies - 25 Stylish Picks</span>
+            <span class="link-domain">birthday-picks.blogspot.com</span>
+          </a>
+        </li>
+        <li data-search="birthday clothes for women - india birthday dresses online ontobyaanchal8.wordpress.com">
+          <a href="https://ontobyaanchal8.wordpress.com/2026/06/30/birthday-clothes-for-women-birthday-outfits-for-women-india-birthday-dresses-online/" target="_blank" rel="noopener">
+            <span class="link-title">Birthday Clothes for Women - India Birthday Dresses Online</span>
+            <span class="link-domain">ontobyaanchal8.wordpress.com</span>
+          </a>
+        </li>
+        <li data-search="trendy birthday outfits for women india birthdaydressforwomen.wordpress.com">
+          <a href="https://birthdaydressforwomen.wordpress.com/2026/06/30/trendy-birthday-outfits-for-women-india-birthday-dresses-online/" target="_blank" rel="noopener">
+            <span class="link-title">Trendy Birthday Outfits for Women India</span>
+            <span class="link-domain">birthdaydressforwomen.wordpress.com</span>
+          </a>
+        </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="accordion-item" id="cocktail-party-wear">
+      <button class="accordion-header" onclick="toggleAccordion(this)">
+        <span class="cat-icon">✨</span>
+        <span class="accordion-title">Cocktail Party Wear</span>
+        <span class="count">4</span>
+        <span class="chevron">&#9662;</span>
+      </button>
+      <div class="accordion-body">
+        <ul class="link-list">
+        <li data-search="elevate your style with the perfect cocktail dress cocktailpartyweardresses.blogspot.com">
+          <a href="https://cocktailpartyweardresses.blogspot.com/2026/06/elevate-your-style-with-perfect.html" target="_blank" rel="noopener">
+            <span class="link-title">Elevate Your Style with the Perfect Cocktail Dress</span>
+            <span class="link-domain">cocktailpartyweardresses.blogspot.com</span>
+          </a>
+        </li>
+        <li data-search="cocktail party wear for women - elegant picks cocktailpartyweardresses.blogspot.com">
+          <a href="https://cocktailpartyweardresses.blogspot.com/2026/06/cocktail-party-wear-for-women-elegant.html" target="_blank" rel="noopener">
+            <span class="link-title">Cocktail Party Wear for Women - Elegant Picks</span>
+            <span class="link-domain">cocktailpartyweardresses.blogspot.com</span>
+          </a>
+        </li>
+        <li data-search="cocktail party wear dress - news cocktail-party-wear-dress.jimdosite.com">
+          <a href="https://cocktail-party-wear-dress.jimdosite.com/news/" target="_blank" rel="noopener">
+            <span class="link-title">Cocktail Party Wear Dress - News</span>
+            <span class="link-domain">cocktail-party-wear-dress.jimdosite.com</span>
+          </a>
+        </li>
+        <li data-search="dresses for cocktail parties - stylish picks cocktailpartyweardresses.blogspot.com">
+          <a href="https://cocktailpartyweardresses.blogspot.com/2026/06/dresses-for-cocktail-parties-stylish.html" target="_blank" rel="noopener">
+            <span class="link-title">Dresses for Cocktail Parties - Stylish Picks</span>
+            <span class="link-domain">cocktailpartyweardresses.blogspot.com</span>
+          </a>
+        </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="accordion-item" id="wedding-dresses">
+      <button class="accordion-header" onclick="toggleAccordion(this)">
+        <span class="cat-icon">🍸</span>
+        <span class="accordion-title">Wedding Dresses</span>
+        <span class="count">3</span>
+        <span class="chevron">&#9662;</span>
+      </button>
+      <div class="accordion-body">
+        <ul class="link-list">
+        <li data-search="buy wedding dresses for women online wedding-dresses-collections-women.blogspot.com">
+          <a href="https://wedding-dresses-collections-women.blogspot.com/2026/06/buy-wedding-dresses-for-women-online.html" target="_blank" rel="noopener">
+            <span class="link-title">Buy Wedding Dresses for Women Online</span>
+            <span class="link-domain">wedding-dresses-collections-women.blogspot.com</span>
+          </a>
+        </li>
+        <li data-search="elegant wedding dresses for women - shop wedding-dresses-collections-women.blogspot.com">
+          <a href="https://wedding-dresses-collections-women.blogspot.com/2026/06/elegant-wedding-dresses-for-women-shop.html" target="_blank" rel="noopener">
+            <span class="link-title">Elegant Wedding Dresses for Women - Shop</span>
+            <span class="link-domain">wedding-dresses-collections-women.blogspot.com</span>
+          </a>
+        </li>
+        <li data-search="wedding dresses for women onto-by-aanchal.jimdosite.com">
+          <a href="https://onto-by-aanchal.jimdosite.com/wedding-dresses-for-women/" target="_blank" rel="noopener">
+            <span class="link-title">Wedding Dresses for Women</span>
+            <span class="link-domain">onto-by-aanchal.jimdosite.com</span>
+          </a>
+        </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="accordion-item" id="sequin-royal-blue-dresses">
+      <button class="accordion-header" onclick="toggleAccordion(this)">
+        <span class="cat-icon">💙</span>
+        <span class="accordion-title">Sequin & Royal Blue Dresses</span>
+        <span class="count">2</span>
+        <span class="chevron">&#9662;</span>
+      </button>
+      <div class="accordion-body">
+        <ul class="link-list">
+        <li data-search="sequin dress - ultimate guide sequindressesforwomen.blogspot.com">
+          <a href="https://sequindressesforwomen.blogspot.com/2026/06/sequin-dress-ultimate-guide-to.html" target="_blank" rel="noopener">
+            <span class="link-title">Sequin Dress - Ultimate Guide</span>
+            <span class="link-domain">sequindressesforwomen.blogspot.com</span>
+          </a>
+        </li>
+        <li data-search="royal blue dress for women - timeless style ontobyaanchal0.blogspot.com">
+          <a href="https://ontobyaanchal0.blogspot.com/2026/06/royal-blue-dress-for-women-timeless.html" target="_blank" rel="noopener">
+            <span class="link-title">Royal Blue Dress for Women - Timeless Style</span>
+            <span class="link-domain">ontobyaanchal0.blogspot.com</span>
+          </a>
+        </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="accordion-item" id="baby-shower-godh-bharai-dresses">
+      <button class="accordion-header" onclick="toggleAccordion(this)">
+        <span class="cat-icon">✈️</span>
+        <span class="accordion-title">Baby Shower & Godh Bharai Dresses</span>
+        <span class="count">2</span>
+        <span class="chevron">&#9662;</span>
+      </button>
+      <div class="accordion-body">
+        <ul class="link-list">
+        <li data-search="godh bharai dresses - beautiful outfit ideas ontobyaanchal0.blogspot.com">
+          <a href="https://ontobyaanchal0.blogspot.com/2026/06/godh-bharai-dresses-beautiful-outfit.html" target="_blank" rel="noopener">
+            <span class="link-title">Godh Bharai Dresses - Beautiful Outfit Ideas</span>
+            <span class="link-domain">ontobyaanchal0.blogspot.com</span>
+          </a>
+        </li>
+        <li data-search="baby shower dresses baby-shower-dresses.mystrikingly.com">
+          <a href="https://baby-shower-dresses.mystrikingly.com/" target="_blank" rel="noopener">
+            <span class="link-title">Baby Shower Dresses</span>
+            <span class="link-domain">baby-shower-dresses.mystrikingly.com</span>
+          </a>
+        </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="accordion-item" id="travel-outfits">
+      <button class="accordion-header" onclick="toggleAccordion(this)">
+        <span class="cat-icon">💍</span>
+        <span class="accordion-title">Travel Outfits</span>
+        <span class="count">3</span>
+        <span class="chevron">&#9662;</span>
+      </button>
+      <div class="accordion-body">
+        <ul class="link-list">
+        <li data-search="casual travel outfits for women - airport travel ideas birthdaydressforwomen.wordpress.com">
+          <a href="https://birthdaydressforwomen.wordpress.com/2026/06/22/casual-travel-outfits-for-women-stylish-and-comfortable-airport-travel-outfit-ideas/" target="_blank" rel="noopener">
+            <span class="link-title">Casual Travel Outfits for Women - Airport Travel Ideas</span>
+            <span class="link-domain">birthdaydressforwomen.wordpress.com</span>
+          </a>
+        </li>
+        <li data-search="casual travel outfits - airport travel ideas (federated journals) onto.federatedjournals.com">
+          <a href="https://onto.federatedjournals.com/casual-travel-outfits-for-women-stylish-and-comfortable-airport-travel-outfit-ideas/" target="_blank" rel="noopener">
+            <span class="link-title">Casual Travel Outfits - Airport Travel Ideas (Federated Journals)</span>
+            <span class="link-domain">onto.federatedjournals.com</span>
+          </a>
+        </li>
+        <li data-search="best travel outfits for women - fashion guide travel-outfits.mystrikingly.com">
+          <a href="https://travel-outfits.mystrikingly.com/blog/best-travel-outfits-for-women-stylish-comfortable-travel-fashion-guide" target="_blank" rel="noopener">
+            <span class="link-title">Best Travel Outfits for Women - Fashion Guide</span>
+            <span class="link-domain">travel-outfits.mystrikingly.com</span>
+          </a>
+        </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="accordion-item" id="other-pleated-dress-profiles">
+      <button class="accordion-header" onclick="toggleAccordion(this)">
+        <span class="cat-icon">📌</span>
+        <span class="accordion-title">Other Pleated Dress Profiles</span>
+        <span class="count">1</span>
+        <span class="chevron">&#9662;</span>
+      </button>
+      <div class="accordion-body">
+        <ul class="link-list">
+        <li data-search="pleated dress for women pleated-dress-for-women-3.jimdosite.com">
+          <a href="https://pleated-dress-for-women-3.jimdosite.com/" target="_blank" rel="noopener">
+            <span class="link-title">Pleated Dress for Women</span>
+            <span class="link-domain">pleated-dress-for-women-3.jimdosite.com</span>
+          </a>
+        </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="accordion-item" id="pleated-tops-co-ord-sets-more">
+      <button class="accordion-header" onclick="toggleAccordion(this)">
+        <span class="cat-icon">📝</span>
+        <span class="accordion-title">Pleated Tops & Co-ord Sets (More)</span>
+        <span class="count">14</span>
+        <span class="chevron">&#9662;</span>
+      </button>
+      <div class="accordion-body">
+        <ul class="link-list">
+        <li data-search="stylish ways to pair tops with pleated skirts postscontent.com">
+          <a href="https://www.postscontent.com/stylish-ways-to-pair-tops-with-pleated-skirts/" target="_blank" rel="noopener">
+            <span class="link-title">Stylish Ways To Pair Tops With Pleated Skirts</span>
+            <span class="link-domain">postscontent.com</span>
+          </a>
+        </li>
+        <li data-search="stylish pleated skirt and top set guide 2026 trends 06 04 telegra.ph">
+          <a href="https://telegra.ph/Stylish-Pleated-Skirt-and-Top-Set-Guide-2026-Trends-06-04" target="_blank" rel="noopener">
+            <span class="link-title">Stylish Pleated Skirt And Top Set Guide 2026 Trends 06 04</span>
+            <span class="link-domain">telegra.ph</span>
+          </a>
+        </li>
+        <li data-search="pleated tops timeless trends for effortless style talkmarkets.com">
+          <a href="https://talkmarkets.com/article/pleated-tops-timeless-trends-for-effortless-style-417931" target="_blank" rel="noopener">
+            <span class="link-title">Pleated Tops Timeless Trends For Effortless Style</span>
+            <span class="link-domain">talkmarkets.com</span>
+          </a>
+        </li>
+        <li data-search="pleated dresses you need in your wardrobe style inspiration servicesdictionary.com">
+          <a href="https://servicesdictionary.com/services/pleated-dresses-you-need-in-your-wardrobe-style-inspiration/" target="_blank" rel="noopener">
+            <span class="link-title">Pleated Dresses You Need In Your Wardrobe Style Inspiration</span>
+            <span class="link-domain">servicesdictionary.com</span>
+          </a>
+        </li>
+        <li data-search="best pleated dresses online for chic everyday style guide pressbulletin.site">
+          <a href="https://pressbulletin.site/best-pleated-dresses-online-for-chic-everyday-style-guide/" target="_blank" rel="noopener">
+            <span class="link-title">Best Pleated Dresses Online For Chic Everyday Style Guide</span>
+            <span class="link-domain">pressbulletin.site</span>
+          </a>
+        </li>
+        <li data-search="how style pleated tops modern and versatile outfits posteezy.com">
+          <a href="https://posteezy.com/how-style-pleated-tops-modern-and-versatile-outfits" target="_blank" rel="noopener">
+            <span class="link-title">How Style Pleated Tops Modern And Versatile Outfits</span>
+            <span class="link-domain">posteezy.com</span>
+          </a>
+        </li>
+        <li data-search="how to style pleated tops and skirts for a fashion joyrulez.com">
+          <a href="https://joyrulez.com/blogs/311187/How-to-Style-Pleated-Tops-and-Skirts-for-a-Fashion" target="_blank" rel="noopener">
+            <span class="link-title">How To Style Pleated Tops And Skirts For A Fashion</span>
+            <span class="link-domain">joyrulez.com</span>
+          </a>
+        </li>
+        <li data-search="elevate your wardrobe with stylish pleated fashion essentials articlescad.com">
+          <a href="https://articlescad.com/elevate-your-wardrobe-with-stylish-pleated-fashion-essentials-178984.html" target="_blank" rel="noopener">
+            <span class="link-title">Elevate Your Wardrobe With Stylish Pleated Fashion Essentials</span>
+            <span class="link-domain">articlescad.com</span>
+          </a>
+        </li>
+        <li data-search="the growing appeal of pleated fashion in modern women s yaare.in">
+          <a href="https://yaare.in/blogs/6766/The-Growing-Appeal-of-Pleated-Fashion-in-Modern-Women-s" target="_blank" rel="noopener">
+            <span class="link-title">The Growing Appeal Of Pleated Fashion In Modern Women S</span>
+            <span class="link-domain">yaare.in</span>
+          </a>
+        </li>
+        <li data-search="8333 reelvyb.com">
+          <a href="https://reelvyb.com/read-blog/8333" target="_blank" rel="noopener">
+            <span class="link-title">8333</span>
+            <span class="link-domain">reelvyb.com</span>
+          </a>
+        </li>
+        <li data-search="pleated co ord set women or trendy fashion styles by onto by 500px.com">
+          <a href="https://500px.com/photo/1124360064/pleated-co-ord-set-women-or-trendy-fashion-styles-by-onto-by-aanchal" target="_blank" rel="noopener">
+            <span class="link-title">Pleated Co Ord Set Women Or Trendy Fashion Styles By Onto By</span>
+            <span class="link-domain">500px.com</span>
+          </a>
+        </li>
+        <li data-search="pleated fabric dresses elegant stylish outfit ideas socialsocial.social">
+          <a href="https://socialsocial.social/pin/pleated-fabric-dresses-elegant-stylish-outfit-ideas/" target="_blank" rel="noopener">
+            <span class="link-title">Pleated Fabric Dresses Elegant Stylish Outfit Ideas</span>
+            <span class="link-domain">socialsocial.social</span>
+          </a>
+        </li>
+        <li data-search="45475 elegant pleated dress for women stylish fashion wear a pleated dress intermilanfansclub.com">
+          <a href="https://intermilanfansclub.com/post/45475_elegant-pleated-dress-for-women-stylish-fashion-wear-a-pleated-dress-for-women-i.html" target="_blank" rel="noopener">
+            <span class="link-title">45475 Elegant Pleated Dress For Women Stylish Fashion Wear A Pleated Dress</span>
+            <span class="link-domain">intermilanfansclub.com</span>
+          </a>
+        </li>
+        <li data-search="95298 elegant pleated dress for women stylish fashion wear a pleated dress mysuccessdarpan.com">
+          <a href="https://mysuccessdarpan.com/post/95298_elegant-pleated-dress-for-women-stylish-fashion-wear-a-pleated-dress-for-women-i.html" target="_blank" rel="noopener">
+            <span class="link-title">95298 Elegant Pleated Dress For Women Stylish Fashion Wear A Pleated Dress</span>
+            <span class="link-domain">mysuccessdarpan.com</span>
+          </a>
+        </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="accordion-item" id="birthday-dresses-outfits-more">
+      <button class="accordion-header" onclick="toggleAccordion(this)">
+        <span class="cat-icon">🔗</span>
+        <span class="accordion-title">Birthday Dresses & Outfits (More)</span>
+        <span class="count">23</span>
+        <span class="chevron">&#9662;</span>
+      </button>
+      <div class="accordion-body">
+        <ul class="link-list">
+        <li data-search="birthday outfits for women: dress to impress on your special day flirtic.com">
+          <a href="https://flirtic.com/blogs/368336/birthday-outfits-for-women%3a-dress-to-impress-on-your-special-day" target="_blank" rel="noopener">
+            <span class="link-title">Birthday Outfits For Women: Dress To Impress On Your Special Day</span>
+            <span class="link-domain">flirtic.com</span>
+          </a>
+        </li>
+        <li data-search="birthday style guide perfect looks for every celebration talkmarkets.com">
+          <a href="https://talkmarkets.com/article/birthday-style-guide-perfect-looks-for-every-celebration-315852" target="_blank" rel="noopener">
+            <span class="link-title">Birthday Style Guide Perfect Looks For Every Celebration</span>
+            <span class="link-domain">talkmarkets.com</span>
+          </a>
+        </li>
+        <li data-search="birthday outfits that make every celebration special theseobacklink.com">
+          <a href="https://www.theseobacklink.com/detail/birthday-outfits-that-make-every-celebration-special269474" target="_blank" rel="noopener">
+            <span class="link-title">Birthday Outfits That Make Every Celebration Special</span>
+            <span class="link-domain">theseobacklink.com</span>
+          </a>
+        </li>
+        <li data-search="daddycow.com daddycow.com">
+          <a href="https://daddycow.com/blogs/view/111163" target="_blank" rel="noopener">
+            <span class="link-title">daddycow.com</span>
+            <span class="link-domain">daddycow.com</span>
+          </a>
+        </li>
+        <li data-search="best birthday dresses to make your special day shine servicesdictionary.com">
+          <a href="https://servicesdictionary.com/best-birthday-dresses-to-make-your-special-day-shine/" target="_blank" rel="noopener">
+            <span class="link-title">Best Birthday Dresses To Make Your Special Day Shine</span>
+            <span class="link-domain">servicesdictionary.com</span>
+          </a>
+        </li>
+        <li data-search="how to choose the perfect birthday dress for any celebration paidforarticles.in">
+          <a href="https://paidforarticles.in/how-to-choose-the-perfect-birthday-dress-for-any-celebration-963443" target="_blank" rel="noopener">
+            <span class="link-title">How To Choose The Perfect Birthday Dress For Any Celebration</span>
+            <span class="link-domain">paidforarticles.in</span>
+          </a>
+        </li>
+        <li data-search="elegant birthday wear women dresses gowns chic looks blogsgod.com">
+          <a href="https://blogsgod.com/elegant-birthday-wear-women-dresses-gowns-chic-looks" target="_blank" rel="noopener">
+            <span class="link-title">Elegant Birthday Wear Women Dresses Gowns Chic Looks</span>
+            <span class="link-domain">blogsgod.com</span>
+          </a>
+        </li>
+        <li data-search="birthday dress for women in india latest fashion trends regic.net">
+          <a href="https://regic.net/birthday-dress-for-women-in-india-latest-fashion-trends/" target="_blank" rel="noopener">
+            <span class="link-title">Birthday Dress For Women In India Latest Fashion Trends</span>
+            <span class="link-domain">regic.net</span>
+          </a>
+        </li>
+        <li data-search="best birthday dresses online shop stunning party looks zoobynews.com">
+          <a href="https://zoobynews.com/best-birthday-dresses-online-shop-stunning-party-looks/" target="_blank" rel="noopener">
+            <span class="link-title">Best Birthday Dresses Online Shop Stunning Party Looks</span>
+            <span class="link-domain">zoobynews.com</span>
+          </a>
+        </li>
+        <li data-search="complete guide to birthday outfits for women party dresses tradi ridefy.socialengine.com">
+          <a href="https://ridefy.socialengine.com/blogs/148/247/complete-guide-to-birthday-outfits-for-women-party-dresses-tradi" target="_blank" rel="noopener">
+            <span class="link-title">Complete Guide To Birthday Outfits For Women Party Dresses Tradi</span>
+            <span class="link-domain">ridefy.socialengine.com</span>
+          </a>
+        </li>
+        <li data-search="the ultimate guide to choosing the perfect birthday dress for socialytime.com">
+          <a href="https://socialytime.com/blogs/135671/The-Ultimate-Guide-to-Choosing-the-Perfect-Birthday-Dress-for" target="_blank" rel="noopener">
+            <span class="link-title">The Ultimate Guide To Choosing The Perfect Birthday Dress For</span>
+            <span class="link-domain">socialytime.com</span>
+          </a>
+        </li>
+        <li data-search="birthday clothes women stylish outfit ideas every celebrationnbirthdays are connectgalaxy.com">
+          <a href="https://connectgalaxy.com/post/727131_birthday-clothes-women-stylish-outfit-ideas-every-celebrationnbirthdays-are.html" target="_blank" rel="noopener">
+            <span class="link-title">Birthday Clothes Women Stylish Outfit Ideas Every Celebrationnbirthdays Are</span>
+            <span class="link-domain">connectgalaxy.com</span>
+          </a>
+        </li>
+        <li data-search="birthday dresses for ladies elegant amp trendy party wear explore the latest facerelation.com">
+          <a href="https://facerelation.com/post/215398_birthday-dresses-for-ladies-elegant-amp-trendy-party-wear-explore-the-latest-bir.html" target="_blank" rel="noopener">
+            <span class="link-title">Birthday Dresses For Ladies Elegant Amp Trendy Party Wear Explore The Latest</span>
+            <span class="link-domain">facerelation.com</span>
+          </a>
+        </li>
+        <li data-search="birthday dresses for ladies elegant trendy deviantart.com">
+          <a href="https://www.deviantart.com/ontobyaanchal0/art/Birthday-Dresses-for-Ladies-Elegant-Trendy-1347025642" target="_blank" rel="noopener">
+            <span class="link-title">Birthday Dresses For Ladies Elegant Trendy</span>
+            <span class="link-domain">deviantart.com</span>
+          </a>
+        </li>
+        <li data-search="92976 birthday frocks for women stylish elegant amp trendy party dresses shop mysuccessdarpan.com">
+          <a href="https://mysuccessdarpan.com/post/92976_birthday-frocks-for-women-stylish-elegant-amp-trendy-party-dresses-shop-beautifu.html" target="_blank" rel="noopener">
+            <span class="link-title">92976 Birthday Frocks For Women Stylish Elegant Amp Trendy Party Dresses Shop</span>
+            <span class="link-domain">mysuccessdarpan.com</span>
+          </a>
+        </li>
+        <li data-search="44715 best birthday dress for women trendy elegant amp party ready styles intermilanfansclub.com">
+          <a href="https://intermilanfansclub.com/post/44715_best-birthday-dress-for-women-trendy-elegant-amp-party-ready-styles-find-the-bes.html" target="_blank" rel="noopener">
+            <span class="link-title">44715 Best Birthday Dress For Women Trendy Elegant Amp Party Ready Styles</span>
+            <span class="link-domain">intermilanfansclub.com</span>
+          </a>
+        </li>
+        <li data-search="birthday dresses for women trendy elegant amp party wear collection discover the ekcochat.com">
+          <a href="https://ekcochat.com/post/1088726_birthday-dresses-for-women-trendy-elegant-amp-party-wear-collection-discover-the.html" target="_blank" rel="noopener">
+            <span class="link-title">Birthday Dresses For Women Trendy Elegant Amp Party Wear Collection Discover The</span>
+            <span class="link-domain">ekcochat.com</span>
+          </a>
+        </li>
+        <li data-search="storeboard.com storeboard.com">
+          <a href="https://www.storeboard.com/ontobyaanchal/images/birthday-dress-for-women-in-india--trendy-and-stylish-looks/1310884" target="_blank" rel="noopener">
+            <span class="link-title">storeboard.com</span>
+            <span class="link-domain">storeboard.com</span>
+          </a>
+        </li>
+        <li data-search="shop birthday dresses online trendy party wear stylish outfitsndiscover perfect connectgalaxy.com">
+          <a href="https://connectgalaxy.com/post/731836_shop-birthday-dresses-online-trendy-party-wear-stylish-outfitsndiscover-perfect.html" target="_blank" rel="noopener">
+            <span class="link-title">Shop Birthday Dresses Online Trendy Party Wear Stylish Outfitsndiscover Perfect</span>
+            <span class="link-domain">connectgalaxy.com</span>
+          </a>
+        </li>
+        <li data-search="stylish birthday clothes for women trendy party amp celebration outfits celebrat culturesbook.com">
+          <a href="https://culturesbook.com/post/335239_stylish-birthday-clothes-for-women-trendy-party-amp-celebration-outfits-celebrat.html" target="_blank" rel="noopener">
+            <span class="link-title">Stylish Birthday Clothes For Women Trendy Party Amp Celebration Outfits Celebrat</span>
+            <span class="link-domain">culturesbook.com</span>
+          </a>
+        </li>
+        <li data-search="trendy birthday outfits for women india stylish party wear ideas looking for sociofans.com">
+          <a href="https://sociofans.com/post/131565_trendy-birthday-outfits-for-women-india-stylish-party-wear-ideas-looking-for-the.html" target="_blank" rel="noopener">
+            <span class="link-title">Trendy Birthday Outfits For Women India Stylish Party Wear Ideas Looking For</span>
+            <span class="link-domain">sociofans.com</span>
+          </a>
+        </li>
+        <li data-search="trendy birthday outfits for women india stylish party wear ideas looking for tannda.net">
+          <a href="https://tannda.net/post/587040_trendy-birthday-outfits-for-women-india-stylish-party-wear-ideas-looking-for-the.html" target="_blank" rel="noopener">
+            <span class="link-title">Trendy Birthday Outfits For Women India Stylish Party Wear Ideas Looking For</span>
+            <span class="link-domain">tannda.net</span>
+          </a>
+        </li>
+        <li data-search="youslade.com youslade.com">
+          <a href="https://youslade.com/post/720934_.html" target="_blank" rel="noopener">
+            <span class="link-title">youslade.com</span>
+            <span class="link-domain">youslade.com</span>
+          </a>
+        </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="accordion-item" id="sequin-dresses-more">
+      <button class="accordion-header" onclick="toggleAccordion(this)">
+        <span class="cat-icon">👚</span>
+        <span class="accordion-title">Sequin Dresses (More)</span>
+        <span class="count">2</span>
+        <span class="chevron">&#9662;</span>
+      </button>
+      <div class="accordion-body">
+        <ul class="link-list">
+        <li data-search="timeless elegance choosing the perfect sequin dress writeupcafe.com">
+          <a href="https://writeupcafe.com/timeless-elegance-choosing-the-perfect-sequin-dress" target="_blank" rel="noopener">
+            <span class="link-title">Timeless Elegance Choosing The Perfect Sequin Dress</span>
+            <span class="link-domain">writeupcafe.com</span>
+          </a>
+        </li>
+        <li data-search="how sequin fashion elevates every special occasion for modern women froodl.com">
+          <a href="https://froodl.com/how-sequin-fashion-elevates-every-special-occasion-for-modern-women" target="_blank" rel="noopener">
+            <span class="link-title">How Sequin Fashion Elevates Every Special Occasion For Modern Women</span>
+            <span class="link-domain">froodl.com</span>
+          </a>
+        </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="accordion-item" id="cocktail-party-wear-more">
+      <button class="accordion-header" onclick="toggleAccordion(this)">
+        <span class="cat-icon">🎉</span>
+        <span class="accordion-title">Cocktail Party Wear (More)</span>
+        <span class="count">6</span>
+        <span class="chevron">&#9662;</span>
+      </button>
+      <div class="accordion-body">
+        <ul class="link-list">
+        <li data-search="how to choose the perfect cocktail party dress for women urbanvalley.store">
+          <a href="https://urbanvalley.store/how-to-choose-the-perfect-cocktail-party-dress-for-women/" target="_blank" rel="noopener">
+            <span class="link-title">How To Choose The Perfect Cocktail Party Dress For Women</span>
+            <span class="link-domain">urbanvalley.store</span>
+          </a>
+        </li>
+        <li data-search="shop stylish co ord sets party wear dresses online now usamagazine.online">
+          <a href="https://usamagazine.online/shop-stylish-co-ord-sets-party-wear-dresses-online-now/" target="_blank" rel="noopener">
+            <span class="link-title">Shop Stylish Co Ord Sets Party Wear Dresses Online Now</span>
+            <span class="link-domain">usamagazine.online</span>
+          </a>
+        </li>
+        <li data-search="modern cocktail party wear dress styles for women guide ghostbloggingplatform.com">
+          <a href="https://ghostbloggingplatform.com/modern-cocktail-party-wear-dress-styles-for-women-guide/" target="_blank" rel="noopener">
+            <span class="link-title">Modern Cocktail Party Wear Dress Styles For Women Guide</span>
+            <span class="link-domain">ghostbloggingplatform.com</span>
+          </a>
+        </li>
+        <li data-search="how to choose the perfect cocktail party dress for ladies levelzone.net">
+          <a href="https://levelzone.net/blogs/48722/How-to-Choose-the-Perfect-Cocktail-Party-Dress-for-Ladies" target="_blank" rel="noopener">
+            <span class="link-title">How To Choose The Perfect Cocktail Party Dress For Ladies</span>
+            <span class="link-domain">levelzone.net</span>
+          </a>
+        </li>
+        <li data-search="the complete guide to cocktail party wear for women what socialytime.com">
+          <a href="https://socialytime.com/blogs/138726/The-Complete-Guide-to-Cocktail-Party-Wear-for-Women-What" target="_blank" rel="noopener">
+            <span class="link-title">The Complete Guide To Cocktail Party Wear For Women What</span>
+            <span class="link-domain">socialytime.com</span>
+          </a>
+        </li>
+        <li data-search="elegant dresses for cocktail parties stylish evening looks finding the perfect d uconnect.ae">
+          <a href="https://uconnect.ae/post/1007150_elegant-dresses-for-cocktail-parties-stylish-evening-looks-finding-the-perfect-d.html" target="_blank" rel="noopener">
+            <span class="link-title">Elegant Dresses For Cocktail Parties Stylish Evening Looks Finding The Perfect D</span>
+            <span class="link-domain">uconnect.ae</span>
+          </a>
+        </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="accordion-item" id="royal-blue-navy-blue-dresses-more">
+      <button class="accordion-header" onclick="toggleAccordion(this)">
+        <span class="cat-icon">👗</span>
+        <span class="accordion-title">Royal Blue & Navy Blue Dresses (More)</span>
+        <span class="count">4</span>
+        <span class="chevron">&#9662;</span>
+      </button>
+      <div class="accordion-body">
+        <ul class="link-list">
+        <li data-search="stunning blue dress for women must have fashion picks pressbulletin.site">
+          <a href="https://pressbulletin.site/stunning-blue-dress-for-women-must-have-fashion-picks/" target="_blank" rel="noopener">
+            <span class="link-title">Stunning Blue Dress For Women Must Have Fashion Picks</span>
+            <span class="link-domain">pressbulletin.site</span>
+          </a>
+        </li>
+        <li data-search="chic navy blue dress for women outfit inspiration guide postscontent.com">
+          <a href="https://www.postscontent.com/chic-navy-blue-dress-for-women-outfit-inspiration-guide/" target="_blank" rel="noopener">
+            <span class="link-title">Chic Navy Blue Dress For Women Outfit Inspiration Guide</span>
+            <span class="link-domain">postscontent.com</span>
+          </a>
+        </li>
+        <li data-search="royal blue dress for women elegant style guide a royal blue dress uconnect.ae">
+          <a href="https://uconnect.ae/post/1000746_royal-blue-dress-for-women-elegant-style-guide-a-royal-blue-dress-for-women-is-o.html" target="_blank" rel="noopener">
+            <span class="link-title">Royal Blue Dress For Women Elegant Style Guide A Royal Blue Dress</span>
+            <span class="link-domain">uconnect.ae</span>
+          </a>
+        </li>
+        <li data-search="navy blue dress for women elegant style ideas 2026 a navy blue bingbees.com">
+          <a href="https://bingbees.com/post/129159_navy-blue-dress-for-women-elegant-style-ideas-2026-a-navy-blue-dress-for-women-i.html" target="_blank" rel="noopener">
+            <span class="link-title">Navy Blue Dress For Women Elegant Style Ideas 2026 A Navy Blue</span>
+            <span class="link-domain">bingbees.com</span>
+          </a>
+        </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="accordion-item" id="travel-outfits-more">
+      <button class="accordion-header" onclick="toggleAccordion(this)">
+        <span class="cat-icon">🎂</span>
+        <span class="accordion-title">Travel Outfits (More)</span>
+        <span class="count">9</span>
+        <span class="chevron">&#9662;</span>
+      </button>
+      <div class="accordion-body">
+        <ul class="link-list">
+        <li data-search="travel outfits for women that blend comfort and chic thestarbiznews.com">
+          <a href="https://thestarbiznews.com/travel-outfits-for-women-that-blend-comfort-and-chic/" target="_blank" rel="noopener">
+            <span class="link-title">Travel Outfits For Women That Blend Comfort And Chic</span>
+            <span class="link-domain">thestarbiznews.com</span>
+          </a>
+        </li>
+        <li data-search="best casual travel outfits for women for every destination d9b5f6adf7b5 medium.com">
+          <a href="https://medium.com/@ontobyaanchal.india/best-casual-travel-outfits-for-women-for-every-destination-d9b5f6adf7b5" target="_blank" rel="noopener">
+            <span class="link-title">Best Casual Travel Outfits For Women For Every Destination D9b5f6adf7b5</span>
+            <span class="link-domain">medium.com</span>
+          </a>
+        </li>
+        <li data-search="best travel outfits for women that are stylish and easy guestcountry.com">
+          <a href="https://guestcountry.com/@ontobyaanchal/best-travel-outfits-for-women-that-are-stylish-and-easy" target="_blank" rel="noopener">
+            <span class="link-title">Best Travel Outfits For Women That Are Stylish And Easy</span>
+            <span class="link-domain">guestcountry.com</span>
+          </a>
+        </li>
+        <li data-search="travel outfits for women stylish looks for every season planning a trip sociofans.com">
+          <a href="https://sociofans.com/post/127447_travel-outfits-for-women-stylish-looks-for-every-season-planning-a-trip-is-excit.html" target="_blank" rel="noopener">
+            <span class="link-title">Travel Outfits For Women Stylish Looks For Every Season Planning A Trip</span>
+            <span class="link-domain">sociofans.com</span>
+          </a>
+        </li>
+        <li data-search="travel outfits for women stylish looks for every season planning a trip culturesbook.com">
+          <a href="https://culturesbook.com/post/323449_travel-outfits-for-women-stylish-looks-for-every-season-planning-a-trip-is-excit.html" target="_blank" rel="noopener">
+            <span class="link-title">Travel Outfits For Women Stylish Looks For Every Season Planning A Trip</span>
+            <span class="link-domain">culturesbook.com</span>
+          </a>
+        </li>
+        <li data-search="travel outfits for women stylish looks for every season planning a trip youslade.com">
+          <a href="https://youslade.com/post/703873_travel-outfits-for-women-stylish-looks-for-every-season-planning-a-trip-is-excit.html" target="_blank" rel="noopener">
+            <span class="link-title">Travel Outfits For Women Stylish Looks For Every Season Planning A Trip</span>
+            <span class="link-domain">youslade.com</span>
+          </a>
+        </li>
+        <li data-search="38457 casual travel outfits for women stylish comfortable amp trendy travel wear germanwomenorg.com">
+          <a href="https://www.germanwomenorg.com/post/38457_casual-travel-outfits-for-women-stylish-comfortable-amp-trendy-travel-wear-2026.html" target="_blank" rel="noopener">
+            <span class="link-title">38457 Casual Travel Outfits For Women Stylish Comfortable Amp Trendy Travel Wear</span>
+            <span class="link-domain">germanwomenorg.com</span>
+          </a>
+        </li>
+        <li data-search="best travel outfits women stylish comfort ideasnchoosing best travel outfits connectgalaxy.com">
+          <a href="https://connectgalaxy.com/post/729429_best-travel-outfits-women-stylish-comfort-ideasnchoosing-best-travel-outfits.html" target="_blank" rel="noopener">
+            <span class="link-title">Best Travel Outfits Women Stylish Comfort Ideasnchoosing Best Travel Outfits</span>
+            <span class="link-domain">connectgalaxy.com</span>
+          </a>
+        </li>
+        <li data-search="35908 comfortable travel outfits for women stylish looks choosing the right comfortabl weblaz.com">
+          <a href="https://weblaz.com/post/35908_comfortable-travel-outfits-for-women-stylish-looks-choosing-the-right-comfortabl.html" target="_blank" rel="noopener">
+            <span class="link-title">35908 Comfortable Travel Outfits For Women Stylish Looks Choosing The Right Comfortabl</span>
+            <span class="link-domain">weblaz.com</span>
+          </a>
+        </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="accordion-item" id="wedding-dresses-more">
+      <button class="accordion-header" onclick="toggleAccordion(this)">
+        <span class="cat-icon">✨</span>
+        <span class="accordion-title">Wedding Dresses (More)</span>
+        <span class="count">4</span>
+        <span class="chevron">&#9662;</span>
+      </button>
+      <div class="accordion-body">
+        <ul class="link-list">
+        <li data-search="65008 choosing the perfect wedding dress for every celebration discover how to ukwomenorg.com">
+          <a href="https://www.ukwomenorg.com/post/65008_choosing-the-perfect-wedding-dress-for-every-celebration-discover-how-to-choose.html" target="_blank" rel="noopener">
+            <span class="link-title">65008 Choosing The Perfect Wedding Dress For Every Celebration Discover How To</span>
+            <span class="link-domain">ukwomenorg.com</span>
+          </a>
+        </li>
+        <li data-search="choosing the perfect wedding dress for every celebration discover how to choose japanesewomenorg.com">
+          <a href="https://www.japanesewomenorg.com/post/168212_choosing-the-perfect-wedding-dress-for-every-celebration-discover-how-to-choose.html" target="_blank" rel="noopener">
+            <span class="link-title">Choosing The Perfect Wedding Dress For Every Celebration Discover How To Choose</span>
+            <span class="link-domain">japanesewomenorg.com</span>
+          </a>
+        </li>
+        <li data-search="wedding guest dresses for women style guide for every celebration attending a tannda.net">
+          <a href="https://tannda.net/post/578808_wedding-guest-dresses-for-women-style-guide-for-every-celebration-attending-a-we.html" target="_blank" rel="noopener">
+            <span class="link-title">Wedding Guest Dresses For Women Style Guide For Every Celebration Attending A</span>
+            <span class="link-domain">tannda.net</span>
+          </a>
+        </li>
+        <li data-search="latest wedding dresses for women trendy bridal amp party wear styles for ralphouensanga.com">
+          <a href="https://ralphouensanga.com/post/167571_latest-wedding-dresses-for-women-trendy-bridal-amp-party-wear-styles-for-2026-ev.html" target="_blank" rel="noopener">
+            <span class="link-title">Latest Wedding Dresses For Women Trendy Bridal Amp Party Wear Styles For</span>
+            <span class="link-domain">ralphouensanga.com</span>
+          </a>
+        </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="accordion-item" id="pinterest-pins">
+      <button class="accordion-header" onclick="toggleAccordion(this)">
+        <span class="cat-icon">🍸</span>
+        <span class="accordion-title">Pinterest Pins</span>
+        <span class="count">34</span>
+        <span class="chevron">&#9662;</span>
+      </button>
+      <div class="accordion-body">
+        <ul class="link-list">
+        <li data-search="6e2cfhjs7 pin.it">
+          <a href="https://pin.it/6e2cfHJS7" target="_blank" rel="noopener">
+            <span class="link-title">6e2cfhjs7</span>
+            <span class="link-domain">pin.it</span>
+          </a>
+        </li>
+        <li data-search="2qxwexwdm pin.it">
+          <a href="https://pin.it/2QXweXwdm" target="_blank" rel="noopener">
+            <span class="link-title">2qxwexwdm</span>
+            <span class="link-domain">pin.it</span>
+          </a>
+        </li>
+        <li data-search="in.pinterest.com in.pinterest.com">
+          <a href="https://in.pinterest.com/pin/963418545315484318" target="_blank" rel="noopener">
+            <span class="link-title">in.pinterest.com</span>
+            <span class="link-domain">in.pinterest.com</span>
+          </a>
+        </li>
+        <li data-search="4jjr4n3jp pin.it">
+          <a href="https://pin.it/4JJR4n3jp" target="_blank" rel="noopener">
+            <span class="link-title">4jjr4n3jp</span>
+            <span class="link-domain">pin.it</span>
+          </a>
+        </li>
+        <li data-search="1lnfcocvl pin.it">
+          <a href="https://pin.it/1lNfcOCVL" target="_blank" rel="noopener">
+            <span class="link-title">1lnfcocvl</span>
+            <span class="link-domain">pin.it</span>
+          </a>
+        </li>
+        <li data-search="1uvzcnqpb pin.it">
+          <a href="https://pin.it/1uVZCnqPb" target="_blank" rel="noopener">
+            <span class="link-title">1uvzcnqpb</span>
+            <span class="link-domain">pin.it</span>
+          </a>
+        </li>
+        <li data-search="4v5gffvxq pin.it">
+          <a href="https://pin.it/4V5GfFVxq" target="_blank" rel="noopener">
+            <span class="link-title">4v5gffvxq</span>
+            <span class="link-domain">pin.it</span>
+          </a>
+        </li>
+        <li data-search="3eyqfg3qd pin.it">
+          <a href="https://pin.it/3EyqFg3Qd" target="_blank" rel="noopener">
+            <span class="link-title">3eyqfg3qd</span>
+            <span class="link-domain">pin.it</span>
+          </a>
+        </li>
+        <li data-search="1pbneyuhd pin.it">
+          <a href="https://pin.it/1PbneyUhd" target="_blank" rel="noopener">
+            <span class="link-title">1pbneyuhd</span>
+            <span class="link-domain">pin.it</span>
+          </a>
+        </li>
+        <li data-search="1zpfqws62 pin.it">
+          <a href="https://pin.it/1ZpFQws62" target="_blank" rel="noopener">
+            <span class="link-title">1zpfqws62</span>
+            <span class="link-domain">pin.it</span>
+          </a>
+        </li>
+        <li data-search="7bhpwxj9c pin.it">
+          <a href="https://pin.it/7BhPwxj9c" target="_blank" rel="noopener">
+            <span class="link-title">7bhpwxj9c</span>
+            <span class="link-domain">pin.it</span>
+          </a>
+        </li>
+        <li data-search="in.pinterest.com in.pinterest.com">
+          <a href="https://in.pinterest.com/pin/963418545315881702" target="_blank" rel="noopener">
+            <span class="link-title">in.pinterest.com</span>
+            <span class="link-domain">in.pinterest.com</span>
+          </a>
+        </li>
+        <li data-search="in.pinterest.com in.pinterest.com">
+          <a href="https://in.pinterest.com/pin/963418545315913429" target="_blank" rel="noopener">
+            <span class="link-title">in.pinterest.com</span>
+            <span class="link-domain">in.pinterest.com</span>
+          </a>
+        </li>
+        <li data-search="2uimjiqfg pin.it">
+          <a href="https://pin.it/2UiMjiqfG" target="_blank" rel="noopener">
+            <span class="link-title">2uimjiqfg</span>
+            <span class="link-domain">pin.it</span>
+          </a>
+        </li>
+        <li data-search="in.pinterest.com in.pinterest.com">
+          <a href="https://in.pinterest.com/pin/963418545315944844" target="_blank" rel="noopener">
+            <span class="link-title">in.pinterest.com</span>
+            <span class="link-domain">in.pinterest.com</span>
+          </a>
+        </li>
+        <li data-search="2watuydf4 pin.it">
+          <a href="https://pin.it/2watUYdf4" target="_blank" rel="noopener">
+            <span class="link-title">2watuydf4</span>
+            <span class="link-domain">pin.it</span>
+          </a>
+        </li>
+        <li data-search="653epesic pin.it">
+          <a href="https://pin.it/653EPESIC" target="_blank" rel="noopener">
+            <span class="link-title">653epesic</span>
+            <span class="link-domain">pin.it</span>
+          </a>
+        </li>
+        <li data-search="7ssaqs3jy pin.it">
+          <a href="https://pin.it/7sSAQS3jY" target="_blank" rel="noopener">
+            <span class="link-title">7ssaqs3jy</span>
+            <span class="link-domain">pin.it</span>
+          </a>
+        </li>
+        <li data-search="in.pinterest.com in.pinterest.com">
+          <a href="https://in.pinterest.com/pin/963418545315984341" target="_blank" rel="noopener">
+            <span class="link-title">in.pinterest.com</span>
+            <span class="link-domain">in.pinterest.com</span>
+          </a>
+        </li>
+        <li data-search="in.pinterest.com in.pinterest.com">
+          <a href="https://in.pinterest.com/pin/963418545316012620" target="_blank" rel="noopener">
+            <span class="link-title">in.pinterest.com</span>
+            <span class="link-domain">in.pinterest.com</span>
+          </a>
+        </li>
+        <li data-search="in.pinterest.com in.pinterest.com">
+          <a href="https://in.pinterest.com/pin/963418545316044816" target="_blank" rel="noopener">
+            <span class="link-title">in.pinterest.com</span>
+            <span class="link-domain">in.pinterest.com</span>
+          </a>
+        </li>
+        <li data-search="in.pinterest.com in.pinterest.com">
+          <a href="https://in.pinterest.com/pin/963418545316109073" target="_blank" rel="noopener">
+            <span class="link-title">in.pinterest.com</span>
+            <span class="link-domain">in.pinterest.com</span>
+          </a>
+        </li>
+        <li data-search="in.pinterest.com in.pinterest.com">
+          <a href="https://in.pinterest.com/pin/963418545316140667" target="_blank" rel="noopener">
+            <span class="link-title">in.pinterest.com</span>
+            <span class="link-domain">in.pinterest.com</span>
+          </a>
+        </li>
+        <li data-search="in.pinterest.com in.pinterest.com">
+          <a href="https://in.pinterest.com/pin/963418545316174182" target="_blank" rel="noopener">
+            <span class="link-title">in.pinterest.com</span>
+            <span class="link-domain">in.pinterest.com</span>
+          </a>
+        </li>
+        <li data-search="74xvdvwz7 pin.it">
+          <a href="https://pin.it/74xVdvWz7" target="_blank" rel="noopener">
+            <span class="link-title">74xvdvwz7</span>
+            <span class="link-domain">pin.it</span>
+          </a>
+        </li>
+        <li data-search="in.pinterest.com in.pinterest.com">
+          <a href="https://in.pinterest.com/pin/963418545316206037" target="_blank" rel="noopener">
+            <span class="link-title">in.pinterest.com</span>
+            <span class="link-domain">in.pinterest.com</span>
+          </a>
+        </li>
+        <li data-search="5t8tczuoh pin.it">
+          <a href="https://pin.it/5t8tcZUOh" target="_blank" rel="noopener">
+            <span class="link-title">5t8tczuoh</span>
+            <span class="link-domain">pin.it</span>
+          </a>
+        </li>
+        <li data-search="4bo8am8vw pin.it">
+          <a href="https://pin.it/4bo8am8vw" target="_blank" rel="noopener">
+            <span class="link-title">4bo8am8vw</span>
+            <span class="link-domain">pin.it</span>
+          </a>
+        </li>
+        <li data-search="in.pinterest.com in.pinterest.com">
+          <a href="https://in.pinterest.com/pin/963418545316234634" target="_blank" rel="noopener">
+            <span class="link-title">in.pinterest.com</span>
+            <span class="link-domain">in.pinterest.com</span>
+          </a>
+        </li>
+        <li data-search="79gca0eh4 pin.it">
+          <a href="https://pin.it/79gcA0EH4" target="_blank" rel="noopener">
+            <span class="link-title">79gca0eh4</span>
+            <span class="link-domain">pin.it</span>
+          </a>
+        </li>
+        <li data-search="in.pinterest.com in.pinterest.com">
+          <a href="https://in.pinterest.com/pin/963418545316331724" target="_blank" rel="noopener">
+            <span class="link-title">in.pinterest.com</span>
+            <span class="link-domain">in.pinterest.com</span>
+          </a>
+        </li>
+        <li data-search="4dpbj2yx8 pin.it">
+          <a href="https://pin.it/4DPbJ2Yx8" target="_blank" rel="noopener">
+            <span class="link-title">4dpbj2yx8</span>
+            <span class="link-domain">pin.it</span>
+          </a>
+        </li>
+        <li data-search="76phxg4oy pin.it">
+          <a href="https://pin.it/76PhXg4oY" target="_blank" rel="noopener">
+            <span class="link-title">76phxg4oy</span>
+            <span class="link-domain">pin.it</span>
+          </a>
+        </li>
+        <li data-search="in.pinterest.com in.pinterest.com">
+          <a href="https://in.pinterest.com/pin/963418545316368067" target="_blank" rel="noopener">
+            <span class="link-title">in.pinterest.com</span>
+            <span class="link-domain">in.pinterest.com</span>
+          </a>
+        </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="accordion-item" id="more-fashion-blog-posts">
+      <button class="accordion-header" onclick="toggleAccordion(this)">
+        <span class="cat-icon">💙</span>
+        <span class="accordion-title">More Fashion Blog Posts</span>
+        <span class="count">16</span>
+        <span class="chevron">&#9662;</span>
+      </button>
+      <div class="accordion-body">
+        <ul class="link-list">
+        <li data-search="sghkszyh postimg.cc">
+          <a href="https://postimg.cc/sGhKsZYh" target="_blank" rel="noopener">
+            <span class="link-title">Sghkszyh</span>
+            <span class="link-domain">postimg.cc</span>
+          </a>
+        </li>
+        <li data-search="44511 zirvede.net">
+          <a href="https://www.zirvede.net/posts/44511" target="_blank" rel="noopener">
+            <span class="link-title">44511</span>
+            <span class="link-domain">zirvede.net</span>
+          </a>
+        </li>
+        <li data-search="ayema.ng ayema.ng">
+          <a href="https://ayema.ng/posts/390861" target="_blank" rel="noopener">
+            <span class="link-title">ayema.ng</span>
+            <span class="link-domain">ayema.ng</span>
+          </a>
+        </li>
+        <li data-search="ayema.ng ayema.ng">
+          <a href="https://ayema.ng/posts/392391" target="_blank" rel="noopener">
+            <span class="link-title">ayema.ng</span>
+            <span class="link-domain">ayema.ng</span>
+          </a>
+        </li>
+        <li data-search="joyrulez.com joyrulez.com">
+          <a href="https://joyrulez.com/posts/317805" target="_blank" rel="noopener">
+            <span class="link-title">joyrulez.com</span>
+            <span class="link-domain">joyrulez.com</span>
+          </a>
+        </li>
+        <li data-search="craneflower.net craneflower.net">
+          <a href="https://craneflower.net/posts/204938" target="_blank" rel="noopener">
+            <span class="link-title">craneflower.net</span>
+            <span class="link-domain">craneflower.net</span>
+          </a>
+        </li>
+        <li data-search="32785 griddixcat.com">
+          <a href="https://www.griddixcat.com/posts/32785" target="_blank" rel="noopener">
+            <span class="link-title">32785</span>
+            <span class="link-domain">griddixcat.com</span>
+          </a>
+        </li>
+        <li data-search="nexto.club nexto.club">
+          <a href="https://nexto.club/posts/106127" target="_blank" rel="noopener">
+            <span class="link-title">nexto.club</span>
+            <span class="link-domain">nexto.club</span>
+          </a>
+        </li>
+        <li data-search="myliveroom.com myliveroom.com">
+          <a href="https://myliveroom.com/posts/107035" target="_blank" rel="noopener">
+            <span class="link-title">myliveroom.com</span>
+            <span class="link-domain">myliveroom.com</span>
+          </a>
+        </li>
+        <li data-search="myliveroom.com myliveroom.com">
+          <a href="https://myliveroom.com/posts/110455" target="_blank" rel="noopener">
+            <span class="link-title">myliveroom.com</span>
+            <span class="link-domain">myliveroom.com</span>
+          </a>
+        </li>
+        <li data-search="myliveroom.com myliveroom.com">
+          <a href="https://myliveroom.com/posts/112867" target="_blank" rel="noopener">
+            <span class="link-title">myliveroom.com</span>
+            <span class="link-domain">myliveroom.com</span>
+          </a>
+        </li>
+        <li data-search="33555 foundersclick.com">
+          <a href="https://www.foundersclick.com/posts/33555" target="_blank" rel="noopener">
+            <span class="link-title">33555</span>
+            <span class="link-domain">foundersclick.com</span>
+          </a>
+        </li>
+        <li data-search="socialytime.com socialytime.com">
+          <a href="https://socialytime.com/posts/150689" target="_blank" rel="noopener">
+            <span class="link-title">socialytime.com</span>
+            <span class="link-domain">socialytime.com</span>
+          </a>
+        </li>
+        <li data-search="socialytime.com socialytime.com">
+          <a href="https://socialytime.com/posts/163445" target="_blank" rel="noopener">
+            <span class="link-title">socialytime.com</span>
+            <span class="link-domain">socialytime.com</span>
+          </a>
+        </li>
+        <li data-search="13886 palscity.com">
+          <a href="https://www.palscity.com/posts/13886" target="_blank" rel="noopener">
+            <span class="link-title">13886</span>
+            <span class="link-domain">palscity.com</span>
+          </a>
+        </li>
+        <li data-search="48950 neworleanspelicansclub.com">
+          <a href="https://neworleanspelicansclub.com/post/48950_.html" target="_blank" rel="noopener">
+            <span class="link-title">48950</span>
+            <span class="link-domain">neworleanspelicansclub.com</span>
+          </a>
+        </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="accordion-item" id="social-web-profiles">
+      <button class="accordion-header" onclick="toggleAccordion(this)">
+        <span class="cat-icon">✈️</span>
+        <span class="accordion-title">Social & Web Profiles</span>
+        <span class="count">16</span>
+        <span class="chevron">&#9662;</span>
+      </button>
+      <div class="accordion-body">
+        <ul class="link-list">
+        <li data-search="aanchalsaraogi circleme.com">
+          <a href="https://www.circleme.com/AanchalSaraogi159345915" target="_blank" rel="noopener">
+            <span class="link-title">Aanchalsaraogi</span>
+            <span class="link-domain">circleme.com</span>
+          </a>
+        </li>
+        <li data-search="ontobyaanchal appsumo.com">
+          <a href="https://appsumo.com/profile/ontobyaanchal/" target="_blank" rel="noopener">
+            <span class="link-title">Ontobyaanchal</span>
+            <span class="link-domain">appsumo.com</span>
+          </a>
+        </li>
+        <li data-search="ontobyanchal prshine.com">
+          <a href="https://www.prshine.com/profile/ontobyanchal" target="_blank" rel="noopener">
+            <span class="link-title">Ontobyanchal</span>
+            <span class="link-domain">prshine.com</span>
+          </a>
+        </li>
+        <li data-search="ontobyaanchal reelvyb.com">
+          <a href="https://reelvyb.com/ontobyaanchal" target="_blank" rel="noopener">
+            <span class="link-title">Ontobyaanchal</span>
+            <span class="link-domain">reelvyb.com</span>
+          </a>
+        </li>
+        <li data-search="ontobyaanchal reasonartit.com">
+          <a href="https://reasonartit.com/ontobyaanchal" target="_blank" rel="noopener">
+            <span class="link-title">Ontobyaanchal</span>
+            <span class="link-domain">reasonartit.com</span>
+          </a>
+        </li>
+        <li data-search="ontobyaanchal socialytime.com">
+          <a href="https://socialytime.com/ontobyaanchal" target="_blank" rel="noopener">
+            <span class="link-title">Ontobyaanchal</span>
+            <span class="link-domain">socialytime.com</span>
+          </a>
+        </li>
+        <li data-search="ontobyaanchal owntweet.com">
+          <a href="https://owntweet.com/ontobyaanchal" target="_blank" rel="noopener">
+            <span class="link-title">Ontobyaanchal</span>
+            <span class="link-domain">owntweet.com</span>
+          </a>
+        </li>
+        <li data-search="ontobyanchal poetryfarm.co.ke">
+          <a href="https://poetryfarm.co.ke/profile/ontobyanchal" target="_blank" rel="noopener">
+            <span class="link-title">Ontobyanchal</span>
+            <span class="link-domain">poetryfarm.co.ke</span>
+          </a>
+        </li>
+        <li data-search="ontobyaanchal tiptopface.com">
+          <a href="https://tiptopface.com/ontobyaanchal" target="_blank" rel="noopener">
+            <span class="link-title">Ontobyaanchal</span>
+            <span class="link-domain">tiptopface.com</span>
+          </a>
+        </li>
+        <li data-search="ontobyaanchal metacouture.co">
+          <a href="https://metacouture.co/ontobyaanchal" target="_blank" rel="noopener">
+            <span class="link-title">Ontobyaanchal</span>
+            <span class="link-domain">metacouture.co</span>
+          </a>
+        </li>
+        <li data-search="ontobyaanchal socialpoint.ch">
+          <a href="https://socialpoint.ch/ontobyaanchal" target="_blank" rel="noopener">
+            <span class="link-title">Ontobyaanchal</span>
+            <span class="link-domain">socialpoint.ch</span>
+          </a>
+        </li>
+        <li data-search="ontobyaanchal urh.app">
+          <a href="https://urh.app/ontobyaanchal" target="_blank" rel="noopener">
+            <span class="link-title">Ontobyaanchal</span>
+            <span class="link-domain">urh.app</span>
+          </a>
+        </li>
+        <li data-search="ontobyaanchal drukarnia.com.ua">
+          <a href="https://drukarnia.com.ua/ontobyaanchal" target="_blank" rel="noopener">
+            <span class="link-title">Ontobyaanchal</span>
+            <span class="link-domain">drukarnia.com.ua</span>
+          </a>
+        </li>
+        <li data-search="posts velog.io">
+          <a href="https://velog.io/@ontobyaanchal/posts" target="_blank" rel="noopener">
+            <span class="link-title">Posts</span>
+            <span class="link-domain">velog.io</span>
+          </a>
+        </li>
+        <li data-search="ontobyaanchal edostate.com">
+          <a href="https://edostate.com/ontobyaanchal" target="_blank" rel="noopener">
+            <span class="link-title">Ontobyaanchal</span>
+            <span class="link-domain">edostate.com</span>
+          </a>
+        </li>
+        <li data-search="ontobyaanchal celebisland.com">
+          <a href="https://celebisland.com/ontobyaanchal" target="_blank" rel="noopener">
+            <span class="link-title">Ontobyaanchal</span>
+            <span class="link-domain">celebisland.com</span>
+          </a>
+        </li>
+        </ul>
+      </div>
+    </div>
+
+
+  <div id="no-results">No links match your search.</div>
+
+  <footer>&copy; 2026 Onto By Aanchal. All profile links maintained for SEO reference.</footer>
+
 </div>
-
-<ul class="nav-links">
-
-<li><a href="#">Home</a></li>
-
-<li><a href="#collection">Collections</a></li>
-
-<li><a href="#about">About</a></li>
-
-<li><a href="#testimonial">Reviews</a></li>
-
-<li><a href="#contact">Contact</a></li>
-
-</ul>
-
-<div class="icons">
-
-<i class="fa-solid fa-magnifying-glass"></i>
-
-<i class="fa-regular fa-heart"></i>
-
-<i class="fa-solid fa-bag-shopping"></i>
-
-</div>
-
-</nav>
-
-</header>
-
-<!--================ HERO ================-->
-
-<section class="hero">
-
-<div class="overlay"></div>
-
-<div class="hero-content" data-aos="fade-up">
-
-<h1>
-
-Luxury Fashion<br>
-
-Designed For Modern Women
-
-</h1>
-
-<p>
-
-Premium Dresses • Pleated Collection • Contemporary Style
-
-</p>
-
-<a href="#" class="btn">
-
-Shop Collection
-
-</a>
-
-</div>
-
-</section>
-
-<!--================ COLLECTIONS ================-->
-
-<section id="collection" class="collections">
-
-<h2 data-aos="fade-up">
-
-Featured Collections
-
-</h2>
-
-<div class="cards">
-
-<div class="card" data-aos="zoom-in">
-
-<img src="assets/collection1.jpg">
-
-<div class="content">
-
-<h3>Pleated Collection</h3>
-
-<p>
-
-Elegant silhouettes crafted with premium fabrics.
-
-</p>
-
-<a href="#">Explore →</a>
-
-</div>
-
-</div>
-
-<div class="card" data-aos="zoom-in">
-
-<img src="assets/collection2.jpg">
-
-<div class="content">
-
-<h3>Luxury Co-Ord Sets</h3>
-
-<p>
-
-Minimal yet statement-making outfits.
-
-</p>
-
-<a href="#">Explore →</a>
-
-</div>
-
-</div>
-
-<div class="card" data-aos="zoom-in">
-
-<img src="assets/collection3.jpg">
-
-<div class="content">
-
-<h3>Accessories</h3>
-
-<p>
-
-Complete every outfit with timeless elegance.
-
-</p>
-
-<a href="#">Explore →</a>
-
-</div>
-
-</div>
-
-</div>
-
-</section>
-
-<!--================ ABOUT ================-->
-
-<section id="about" class="about">
-
-<div class="about-img" data-aos="fade-right">
-
-<img src="assets/about.jpg">
-
-</div>
-
-<div class="about-text" data-aos="fade-left">
-
-<h2>
-
-Crafted With Passion
-
-</h2>
-
-<p>
-
-Each collection is thoughtfully designed for women who value elegance, comfort, and timeless style. Our garments blend premium craftsmanship with modern fashion to create pieces you'll cherish for years.
-
-</p>
-
-<a href="#" class="btn">
-
-Read More
-
-</a>
-
-</div>
-
-</section>
-
-<!--================ WHY US ================-->
-
-<section class="why">
-
-<h2 data-aos="fade-up">
-
-Why Choose Us
-
-</h2>
-
-<div class="why-grid">
-
-<div class="box">
-
-<i class="fa-solid fa-gem"></i>
-
-<h3>Premium Quality</h3>
-
-<p>
-
-Finest fabrics with impeccable craftsmanship.
-
-</p>
-
-</div>
-
-<div class="box">
-
-<i class="fa-solid fa-truck"></i>
-
-<h3>Worldwide Shipping</h3>
-
-<p>
-
-Fast and secure delivery across the globe.
-
-</p>
-
-</div>
-
-<div class="box">
-
-<i class="fa-solid fa-rotate"></i>
-
-<h3>Easy Returns</h3>
-
-<p>
-
-Hassle-free exchange and return policy.
-
-</p>
-
-</div>
-
-<div class="box">
-
-<i class="fa-solid fa-headset"></i>
-
-<h3>24/7 Support</h3>
-
-<p>
-
-Dedicated assistance whenever you need it.
-
-</p>
-
-</div>
-
-</div>
-
-</section>
-
-<!--================ NEW ARRIVALS ================-->
-
-<section class="products">
-
-<h2 data-aos="fade-up">
-
-New Arrivals
-
-</h2>
-
-<div class="product-grid">
-
-<div class="product">
-
-<img src="assets/p1.jpg">
-
-<h4>Ivory Pleated Dress</h4>
-
-<span>$149</span>
-
-</div>
-
-<div class="product">
-
-<img src="assets/p2.jpg">
-
-<h4>Luxury Co-Ord Set</h4>
-
-<span>$189</span>
-
-</div>
-
-<div class="product">
-
-<img src="assets/p3.jpg">
-
-<h4>Designer Evening Wear</h4>
-
-<span>$229</span>
-
-</div>
-
-<div class="product">
-
-<img src="assets/p4.jpg">
-
-<h4>Classic Black Dress</h4>
-
-<span>$169</span>
-
-</div>
-
-</div>
-
-</section>
-
-<!--================ TESTIMONIAL ================-->
-
-<section id="testimonial" class="testimonial">
-
-<h2>
-
-Customer Love
-
-</h2>
-
-<div class="testimonial-box">
-
-<p>
-
-★★★★★
-
-</p>
-
-<p>
-
-"The quality exceeded every expectation. Beautiful fabrics and perfect fitting."
-
-</p>
-
-<h4>
-
-— Sophia
-
-</h4>
-
-</div>
-
-</section>
-
-<!--================ NEWSLETTER ================-->
-
-<section class="newsletter">
-
-<h2>
-
-Join Our Newsletter
-
-</h2>
-
-<p>
-
-Receive exclusive collections, offers and fashion inspiration.
-
-</p>
-
-<form>
-
-<input type="email" placeholder="Enter your email">
-
-<button>
-
-Subscribe
-
-</button>
-
-</form>
-
-</section>
-
-<!--================ FOOTER ================-->
-
-<footer id="contact">
-
-<div class="footer-grid">
-
-<div>
-
-<h3>
-
-ONTO
-
-</h3>
-
-<p>
-
-Premium Women's Fashion
-
-</p>
-
-</div>
-
-<div>
-
-<h4>
-
-Quick Links
-
-</h4>
-
-<a href="#">Home</a>
-
-<a href="#">Collections</a>
-
-<a href="#">About</a>
-
-<a href="#">Contact</a>
-
-</div>
-
-<div>
-
-<h4>
-
-Follow
-
-</h4>
-
-<a href="#"><i class="fab fa-instagram"></i></a>
-
-<a href="#"><i class="fab fa-facebook"></i></a>
-
-<a href="#"><i class="fab fa-pinterest"></i></a>
-
-</div>
-
-</div>
-
-<p class="copyright">
-
-© 2026 Onto By Aanchal. All Rights Reserved.
-
-</p>
-
-</footer>
-
-<script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
 
 <script>
+function toggleAccordion(btn) {
+  const item = btn.parentElement;
+  item.classList.toggle('open');
+}
 
-AOS.init({
+function toggleAll(open) {
+  document.querySelectorAll('.accordion-item').forEach(item => {
+    item.classList.toggle('open', open);
+  });
+}
 
-duration:1000,
+const searchInput = document.getElementById('searchInput');
+const noResults = document.getElementById('no-results');
 
-once:true
+searchInput.addEventListener('input', function() {
+  const q = this.value.trim().toLowerCase();
+  let anyVisible = false;
 
+  document.querySelectorAll('.accordion-item').forEach(item => {
+    let sectionHasVisible = false;
+    item.querySelectorAll('li').forEach(li => {
+      const match = li.getAttribute('data-search').includes(q);
+      li.classList.toggle('hidden', !match);
+      if (match) sectionHasVisible = true;
+    });
+    const show = (q === '' || sectionHasVisible);
+    item.style.display = show ? '' : 'none';
+    if (q !== '' && sectionHasVisible) item.classList.add('open');
+    if (q === '') item.classList.remove('open');
+    if (show) anyVisible = true;
+  });
+
+  noResults.style.display = anyVisible ? 'none' : 'block';
 });
-
 </script>
 
-<script src="script.js"></script>
-
 </body>
-
 </html>

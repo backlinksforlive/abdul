@@ -64,12 +64,13 @@
   .controls {
     display: flex; justify-content: center; gap: 10px; margin-bottom: 26px;
   }
-  .controls button {
+  .controls button, .controls .nav-link {
     background: var(--bg-card); border: 1px solid var(--border); color: var(--text-dim);
     padding: 7px 16px; border-radius: 20px; font-size: 12px; cursor: pointer;
-    transition: all .15s;
+    transition: all .15s; text-decoration: none; display: inline-block;
   }
-  .controls button:hover { border-color: var(--accent2); color: var(--text); }
+  .controls button:hover, .controls .nav-link:hover { border-color: var(--accent2); color: var(--text); }
+  .controls .nav-link.active { border-color: var(--accent2); color: var(--accent2); }
 
   .accordion-item {
     background: var(--bg-card);
@@ -162,6 +163,8 @@
   </div>
 
   <div class="controls">
+    <a class="nav-link" href="https://divinheal5-ui.github.io/ontobyaanchal/">Page 1</a>
+    <a class="nav-link" href="https://divinheal5-ui.github.io/ontobyaanchal/links2.html">Page 2</a>
     <button onclick="toggleAll(true)">Expand All</button>
     <button onclick="toggleAll(false)">Collapse All</button>
   </div>

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://divinheal5-ui.github.io/ontobyaanchal/sitemap.xml
